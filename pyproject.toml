@@ -53,7 +53,7 @@ content-accessibility-utility-on-aws = "content_accessibility_utility_on_aws.cli
 
 
 [tool.setuptools]
-packages = { find = { include = ["content_accessibility_utility_on_aws*"] } }
+packages = { find = { include = ["content_accessibility_utility_on_aws*", "tests*"] } }
 
 [tool.setuptools.package-data]
 content_accessibility_with_aws = ["**/*.html"]

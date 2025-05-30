@@ -42,6 +42,19 @@ class SessionUsageTracker:
         if cls._instance is None:
             cls._instance = SessionUsageTracker()
         return cls._instance
+        
+    @classmethod
+    def reset_instance(cls):
+        """
+        Reset the singleton instance to track a new processing session.
+        
+        This creates a new instance with fresh tracking data.
+        
+        Returns:
+            SessionUsageTracker: The new singleton instance
+        """
+        cls._instance = SessionUsageTracker()
+        return cls._instance
 
     def __init__(self):
         """Initialize a new SessionUsageTracker."""

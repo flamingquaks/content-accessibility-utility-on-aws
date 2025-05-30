@@ -78,6 +78,12 @@ def process_uploaded_file(uploaded_file, processing_options: Dict[str, Any]) -> 
         uploaded_file: Streamlit uploaded file object
         processing_options: Dictionary of processing options
     """
+    # Import the usage tracker to reset it for this processing session
+    from content_accessibility_utility_on_aws.utils.usage_tracker import SessionUsageTracker
+    
+    # Reset the usage tracker to start fresh for this document
+    SessionUsageTracker.reset_instance()
+    
     # Determine the file type
     file_type = detect_file_type(uploaded_file.name)
 
