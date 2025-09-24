@@ -164,6 +164,7 @@ class RemediationManager:
             # Document structure remediation strategies
             "missing-page-title": remediate_missing_document_title,
             "missing-language": remediate_missing_language,
+            "missing-document-language": remediate_missing_language,  # Alternative issue type name
             # Form remediation strategies
             "missing-input-label": remediate_missing_form_labels,
             "missing-required-indicator": remediate_missing_required_indicators,

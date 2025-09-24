@@ -22,6 +22,7 @@ from content_accessibility_utility_on_aws.utils.image_utils import (
     find_image_directory,
 )
 from content_accessibility_utility_on_aws.remediate.remediation_manager import RemediationManager
+from content_accessibility_utility_on_aws.utils.language_utils import DEFAULT_LANGUAGE
 
 # Set up module-level logger
 logger = setup_logger(__name__)
@@ -406,11 +407,13 @@ def remediate_html_accessibility(
                             f"Sorted {len(sorted_html_files)} HTML files for combining"
                         )
 
+                        # Get language for document from options
+                        default_lang = options.get("default_language", DEFAULT_LANGUAGE)
+                        
                         # Create base document structure
-                        combined_soup = BeautifulSoup(
-                            """
+                        html_template = """
                         <!DOCTYPE html>
-                        <html lang="en">
+                        <html lang="LANGUAGE_PLACEHOLDER">
                         <head>
                             <meta charset="utf-8"/>
                             <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -447,8 +450,10 @@ def remediate_html_accessibility(
                             <main id="main-content" role="main">
                             </main>
                         </body>
-                        </html>
-                        """,
+                        </html>"""
+                        
+                        combined_soup = BeautifulSoup(
+                            html_template.replace("LANGUAGE_PLACEHOLDER", default_lang),
                             "html.parser",
                         )
 

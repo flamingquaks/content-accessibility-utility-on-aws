@@ -12,6 +12,7 @@ from content_accessibility_utility_on_aws.utils.logging_helper import (
     setup_logger,
     DocumentAccessibilityError,
 )
+from content_accessibility_utility_on_aws.utils.language_utils import DEFAULT_LANGUAGE
 
 # Set up module-level logger
 logger = setup_logger(__name__)
@@ -52,7 +53,7 @@ def combine_html_pages(
         # Create the combined document
         html_content = [
             "<!DOCTYPE html>",
-            f'<html lang="{doc_info.get("language", "en") if doc_info else "en"}">',
+            f'<html lang="{doc_info.get("language", DEFAULT_LANGUAGE) if doc_info else DEFAULT_LANGUAGE}">',
             "<head>",
             '<meta charset="utf-8"/>',
             '<meta content="width=device-width, initial-scale=1.0" name="viewport"/>',
