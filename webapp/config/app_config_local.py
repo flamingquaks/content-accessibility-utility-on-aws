@@ -10,6 +10,8 @@ This module handles environment variables, AWS configuration, and default settin
 import os
 from typing import Dict, Any, Optional
 
+from content_accessibility_utility_on_aws.utils.language_utils import DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES
+
 class Config:
     """Configuration class for the Document Accessibility Streamlit application."""
     # AWS configuration keys
@@ -51,6 +53,12 @@ class Config:
     def work_dir(self) -> Optional[str]:
         """Get the working directory path."""
         return self._work_dir
+    
+    @property
+    def supported_languages(self) -> Dict[str, str]:
+        """Get list of supported languages for the UI."""
+        from content_accessibility_utility_on_aws.utils.language_utils import LANGUAGE_NAMES
+        return {code: LANGUAGE_NAMES.get(code, code.upper()) for code in sorted(SUPPORTED_LANGUAGES)}
     
     @property
     def aws_configured(self) -> bool:
@@ -113,7 +121,8 @@ class Config:
         }
     
     def get_remediation_options(self, fix_images: bool, fix_headings: bool, 
-                              fix_links: bool, severity_threshold: str) -> Dict[str, Any]:
+                              fix_links: bool, severity_threshold: str, 
+                              default_language: str = DEFAULT_LANGUAGE) -> Dict[str, Any]:
         """
         Create remediation options dictionary for the document_accessibility API.
         
@@ -122,6 +131,7 @@ class Config:
             fix_headings: Whether to fix heading structure issues
             fix_links: Whether to fix link accessibility issues
             severity_threshold: Minimum severity level to fix (error, warning, info)
+            default_language: Default language code for document language remediation
             
         Returns:
             Dictionary of remediation options
@@ -133,6 +143,7 @@ class Config:
             "severity_threshold": severity_threshold,
             "backup": True,
             "format": "json",
+            "default_language": default_language,
         }
 
 # Create a singleton instance

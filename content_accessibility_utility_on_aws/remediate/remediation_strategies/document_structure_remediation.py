@@ -11,6 +11,7 @@ from typing import Dict, Any, Optional
 from bs4 import BeautifulSoup
 
 from content_accessibility_utility_on_aws.utils.logging_helper import setup_logger
+from content_accessibility_utility_on_aws.utils.language_utils import detect_language_from_html, DEFAULT_LANGUAGE
 
 # Set up module-level logger
 logger = setup_logger(__name__)
@@ -85,6 +86,7 @@ def remediate_missing_language(
     Args:
         soup: The BeautifulSoup object representing the HTML document
         issue: The accessibility issue to remediate
+        *args: Additional arguments, may include options dict with 'default_language'
 
     Returns:
         A message describing the remediation, or None if no remediation was performed
@@ -99,11 +101,15 @@ def remediate_missing_language(
         logger.debug("HTML element already has lang attribute")
         return None
 
-    # Set default language as English
-    lang_code = "en"
+    # Get default language from options or use system default
+    default_language = DEFAULT_LANGUAGE
+    if args and len(args) > 0 and isinstance(args[0], dict):
+        options = args[0]
+        default_language = options.get('default_language', DEFAULT_LANGUAGE)
 
-    # Future enhancement: detect language based on content using a language detection library
-    # For now, use English as the default language
-
+    # Detect language from content or use default
+    lang_code = detect_language_from_html(soup, default_language)
+    
     html["lang"] = lang_code
+    logger.info("Added language attribute: lang='%s'", lang_code)
     return f"Added language attribute: lang='{lang_code}'"
