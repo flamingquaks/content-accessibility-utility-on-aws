@@ -13,7 +13,10 @@ from datetime import datetime
 from typing import Optional
 
 from content_accessibility_utility_on_aws.utils.logging_helper import setup_logger
-from content_accessibility_utility_on_aws.utils.usage_tracker import SessionUsageTracker
+from content_accessibility_utility_on_aws.utils.usage_tracker import (
+    SessionUsageTracker,
+    get_current_usage_tracker
+)
 from content_accessibility_utility_on_aws.utils.image_utils import resize_image
 
 # Set up module-level logger
@@ -134,7 +137,7 @@ class BedrockClient:
 
                 try:
                     # Track the usage in the session tracker
-                    usage_tracker = SessionUsageTracker.get_instance()
+                    usage_tracker = get_current_usage_tracker()
                     usage_tracker.track_bedrock_call(
                         model_id=self.model_id,
                         purpose=purpose,
@@ -278,7 +281,7 @@ class BedrockClient:
 
                 try:
                     # Track the usage in the session tracker
-                    usage_tracker = SessionUsageTracker.get_instance()
+                    usage_tracker = get_current_usage_tracker()
                     usage_tracker.track_bedrock_call(
                         model_id=self.model_id,
                         purpose="alt_text_generation",

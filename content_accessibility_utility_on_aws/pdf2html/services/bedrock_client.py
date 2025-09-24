@@ -21,7 +21,10 @@ from datetime import datetime
 from content_accessibility_utility_on_aws.utils.logging_helper import (
     setup_logger,
 )
-from content_accessibility_utility_on_aws.utils.usage_tracker import SessionUsageTracker
+from content_accessibility_utility_on_aws.utils.usage_tracker import (
+    SessionUsageTracker,
+    get_current_usage_tracker
+)
 from content_accessibility_utility_on_aws.pdf2html.services.page_builder import build_html_data
 
 # Set up module-level logger
@@ -529,7 +532,7 @@ class ExtendedBDAClient(BDAClient):
             
             # Track BDA usage
             try:
-                usage_tracker = SessionUsageTracker.get_instance()
+                usage_tracker = get_current_usage_tracker()
                 usage_tracker.track_bda_processing(
                     project_arn=self.project_arn,
                     document_id=document_id,

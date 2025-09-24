@@ -78,6 +78,15 @@ def process_uploaded_file(uploaded_file, processing_options: Dict[str, Any]) -> 
         uploaded_file: Streamlit uploaded file object
         processing_options: Dictionary of processing options
     """
+    # Reset session processing state and usage tracking when starting new processing
+    try:
+        from utils.usage_tracker_utils import reset_session_processing
+        reset_session_processing()
+    except ImportError:
+        # Fallback if import fails - just reset basic session state
+        SessionState.set(SessionState.PROCESSING_COMPLETE_KEY, False)
+        SessionState.set(SessionState.RESULTS_KEY, None)
+    
     # Determine the file type
     file_type = detect_file_type(uploaded_file.name)
 

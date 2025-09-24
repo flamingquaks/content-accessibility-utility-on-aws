@@ -12,8 +12,18 @@ import pandas as pd
 import altair as alt
 import json
 import os
+import sys
 from typing import Optional
 import datetime
+
+# Add the parent directory to sys.path to import usage tracker utils
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+
+try:
+    from utils.usage_tracker_utils import get_session_usage_tracker
+except ImportError:
+    # Fallback for when import fails
+    get_session_usage_tracker = None
 
 
 
@@ -24,16 +34,27 @@ def display_usage_view(usage_data_path: Optional[str] = None) -> None:
     Args:
         usage_data_path: Path to the usage data JSON file
     """
-    if not usage_data_path or not os.path.exists(usage_data_path):
-        st.info("No usage data available for this processing session.")
-        return
+    usage_data = None
     
-    # Load usage data
-    try:
-        with open(usage_data_path, 'r', encoding='utf-8') as f:
-            usage_data = json.load(f)
-    except (OSError, json.JSONDecodeError) as e:
-        st.error(f"Failed to load usage data: {e}")
+    # Try to load data from file first
+    if usage_data_path and os.path.exists(usage_data_path):
+        try:
+            with open(usage_data_path, 'r', encoding='utf-8') as f:
+                usage_data = json.load(f)
+        except (OSError, json.JSONDecodeError) as e:
+            st.error(f"Failed to load usage data from file: {e}")
+    
+    # If no file data, try to get data from the session tracker
+    if usage_data is None and get_session_usage_tracker is not None:
+        try:
+            tracker = get_session_usage_tracker()
+            usage_data = tracker.get_usage_data()
+        except Exception as e:
+            st.error(f"Failed to get usage data from session tracker: {e}")
+    
+    # If still no data, show info message
+    if usage_data is None:
+        st.info("No usage data available for this processing session.")
         return
     
     # Get cost rates from session state

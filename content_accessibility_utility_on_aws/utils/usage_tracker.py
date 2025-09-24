@@ -30,18 +30,48 @@ class SessionUsageTracker:
     """
 
     _instance = None
+    _session_instances = {}
 
     @classmethod
-    def get_instance(cls):
+    def get_instance(cls, session_id: Optional[str] = None):
         """
-        Get or create the singleton instance of SessionUsageTracker.
+        Get or create a SessionUsageTracker instance.
+        
+        If session_id is provided, returns a session-specific instance.
+        If session_id is None, returns the singleton instance (for backward compatibility).
+
+        Args:
+            session_id: Optional session identifier for session-specific tracking
 
         Returns:
-            SessionUsageTracker: The singleton instance
+            SessionUsageTracker: The tracker instance
         """
-        if cls._instance is None:
-            cls._instance = SessionUsageTracker()
-        return cls._instance
+        if session_id is not None:
+            # Session-specific instance
+            if session_id not in cls._session_instances:
+                cls._session_instances[session_id] = SessionUsageTracker()
+            return cls._session_instances[session_id]
+        else:
+            # Singleton instance for backward compatibility
+            if cls._instance is None:
+                cls._instance = SessionUsageTracker()
+            return cls._instance
+
+    @classmethod
+    def clear_session(cls, session_id: str):
+        """
+        Clear a specific session's usage tracker.
+        
+        Args:
+            session_id: Session identifier to clear
+        """
+        if session_id in cls._session_instances:
+            del cls._session_instances[session_id]
+
+    @classmethod
+    def clear_all_sessions(cls):
+        """Clear all session-specific usage trackers."""
+        cls._session_instances.clear()
 
     def __init__(self):
         """Initialize a new SessionUsageTracker."""
@@ -310,3 +340,45 @@ class SessionUsageTracker:
             
         # Simple approximation: ~4 characters per token
         return max(1, len(text) // 4)
+
+
+# Thread-local storage for current session context
+import threading
+_local = threading.local()
+
+
+def set_current_session_id(session_id: Optional[str]):
+    """
+    Set the current session ID for usage tracking.
+    
+    This allows the API layer to automatically use session-specific tracking
+    without requiring session_id to be passed through all function calls.
+    
+    Args:
+        session_id: Session identifier, or None to use singleton behavior
+    """
+    _local.session_id = session_id
+
+
+def get_current_session_id() -> Optional[str]:
+    """
+    Get the current session ID for usage tracking.
+    
+    Returns:
+        Current session ID, or None if not set
+    """
+    return getattr(_local, 'session_id', None)
+
+
+def get_current_usage_tracker() -> SessionUsageTracker:
+    """
+    Get the usage tracker for the current session context.
+    
+    This function checks for a thread-local session ID first,
+    then falls back to the singleton instance.
+    
+    Returns:
+        SessionUsageTracker: The appropriate usage tracker instance
+    """
+    session_id = get_current_session_id()
+    return SessionUsageTracker.get_instance(session_id)

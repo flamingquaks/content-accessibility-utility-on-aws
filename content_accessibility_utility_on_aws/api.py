@@ -20,7 +20,10 @@ from content_accessibility_utility_on_aws.utils.logging_helper import (
 )
 from content_accessibility_utility_on_aws.utils.config import config_manager
 from content_accessibility_utility_on_aws.utils.resources import ensure_directory
-from content_accessibility_utility_on_aws.utils.usage_tracker import SessionUsageTracker
+from content_accessibility_utility_on_aws.utils.usage_tracker import (
+    SessionUsageTracker, 
+    get_current_usage_tracker
+)
 
 # Set up module-level logger
 logger = setup_logger(__name__, level="INFO")
@@ -572,7 +575,7 @@ def save_usage_data(
             return None
 
         # Finalize the session
-        usage_tracker = SessionUsageTracker.get_instance()
+        usage_tracker = get_current_usage_tracker()
         usage_tracker.finalize_session()
         
         result_path = None

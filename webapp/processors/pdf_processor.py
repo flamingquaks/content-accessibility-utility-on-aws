@@ -10,8 +10,10 @@ import streamlit as st
 from typing import Dict, Any, Optional, Tuple
 
 from content_accessibility_utility_on_aws.api import process_pdf_accessibility
+from content_accessibility_utility_on_aws.utils.usage_tracker import set_current_session_id
 
 from utils.aws_utils import display_aws_warning, display_html_upload_notice
+from utils.session_utils import SessionState
 from config.app_config_local import Config
 
 # Set up logger
@@ -32,6 +34,10 @@ def process_pdf_file(pdf_path: str, temp_dir: str, config: Config, options: Dict
         - Boolean indicating processing success/failure
         - Dictionary of results if successful, None otherwise
     """
+    # Set session context for usage tracking
+    session_id = SessionState.get_session_id()
+    set_current_session_id(session_id)
+    
     # Check if AWS S3 bucket is configured
     if not config.aws_configured:
         display_aws_warning()
