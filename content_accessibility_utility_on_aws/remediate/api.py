@@ -408,7 +408,7 @@ def remediate_html_accessibility(
                         )
 
                         # Get language for document from options
-                        default_lang = options.get("default_language", DEFAULT_LANGUAGE)
+                        target_lang = options.get("target_language", DEFAULT_LANGUAGE)
                         
                         # Create base document structure
                         html_template = """
@@ -453,7 +453,7 @@ def remediate_html_accessibility(
                         </html>"""
                         
                         combined_soup = BeautifulSoup(
-                            html_template.replace("LANGUAGE_PLACEHOLDER", default_lang),
+                            html_template.replace("LANGUAGE_PLACEHOLDER", target_lang),
                             "html.parser",
                         )
 

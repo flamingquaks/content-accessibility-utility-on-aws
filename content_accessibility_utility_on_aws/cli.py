@@ -238,9 +238,9 @@ def _add_remediate_arguments(parser: argparse.ArgumentParser) -> None:
         help="Minimum severity level of issues to remediate",
     )
     parser.add_argument(
-        "--default-language",
+        "--target-language",
         default="en",
-        help="Default language code to use for document language remediation (e.g., en, es, fr)",
+        help="Target language code to use for document language remediation (e.g., en, es, fr)",
     )
     parser.add_argument(
         "--audit-report", help="Path to audit report JSON file to use for remediation"
@@ -364,9 +364,9 @@ def _add_process_arguments(parser: argparse.ArgumentParser) -> None:
         help="Automatically fix issues where possible",
     )
     parser.add_argument(
-        "--default-language",
+        "--target-language",
         default="en",
-        help="Default language code to use for document language remediation (e.g., en, es, fr)",
+        help="Target language code to use for document language remediation (e.g., en, es, fr)",
     )
     parser.add_argument(
         "--unified-report",
@@ -696,7 +696,7 @@ def run_remediate_command(args: Dict[str, Any]) -> int:
             "single_page": args.get("single_page", False),
             "multi_page": args.get("multi_page", False),
             "profile": args.get("profile"),  # Pass the profile parameter
-            "default_language": args.get("default_language", "en"),
+            "target_language": args.get("target_language", "en"),
         }
 
         if not args.get("quiet"):
@@ -916,7 +916,7 @@ def run_process_command(args: Dict[str, Any]) -> int:
                 "single_page": args.get("single_page", False),
                 "multi_page": args.get("multi_page", False),
                 "profile": profile,  # Add profile to remediation options
-                "default_language": args.get("default_language", "en"),
+                "target_language": args.get("target_language", "en"),
             }
 
             if args.get("multi_page", False):

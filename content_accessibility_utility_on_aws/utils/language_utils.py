@@ -70,20 +70,20 @@ LANGUAGE_NAMES: Dict[str, str] = {
 DEFAULT_LANGUAGE = 'en'
 
 
-def detect_language_from_content(text: str, default_language: str = DEFAULT_LANGUAGE) -> str:
+def detect_language_from_content(text: str, target_language: str = DEFAULT_LANGUAGE) -> str:
     """
     Detect language from text content using langdetect library.
     
     Args:
         text: Text content to analyze
-        default_language: Default language to return if detection fails
+        target_language: Target language to return if detection fails
         
     Returns:
         ISO 639-1 language code (e.g., 'en', 'es', 'fr')
     """
     if not text or not text.strip():
-        logger.debug("No text provided for language detection, using default: %s", default_language)
-        return default_language
+        logger.debug("No text provided for language detection, using target: %s", target_language)
+        return target_language
         
     try:
         from langdetect import detect
@@ -94,25 +94,25 @@ def detect_language_from_content(text: str, default_language: str = DEFAULT_LANG
             logger.debug("Detected language: %s", detected_lang)
             return detected_lang
         else:
-            logger.warning("Detected unsupported language: %s, using default: %s", 
-                         detected_lang, default_language)
-            return default_language
+            logger.warning("Detected unsupported language: %s, using target: %s", 
+                         detected_lang, target_language)
+            return target_language
             
     except ImportError:
-        logger.warning("langdetect library not available, using default language: %s", default_language)
-        return default_language
+        logger.warning("langdetect library not available, using target language: %s", target_language)
+        return target_language
     except Exception as e:
-        logger.warning("Language detection failed: %s, using default: %s", str(e), default_language)
-        return default_language
+        logger.warning("Language detection failed: %s, using target: %s", str(e), target_language)
+        return target_language
 
 
-def detect_language_from_html(soup: BeautifulSoup, default_language: str = DEFAULT_LANGUAGE) -> str:
+def detect_language_from_html(soup: BeautifulSoup, target_language: str = DEFAULT_LANGUAGE) -> str:
     """
     Detect language from HTML content.
     
     Args:
         soup: BeautifulSoup object of HTML document
-        default_language: Default language to return if detection fails
+        target_language: Target language to return if detection fails
         
     Returns:
         ISO 639-1 language code
@@ -148,7 +148,7 @@ def detect_language_from_html(soup: BeautifulSoup, default_language: str = DEFAU
     if len(text_content.strip()) < 100:
         text_content = soup.get_text(strip=True)
     
-    return detect_language_from_content(text_content, default_language)
+    return detect_language_from_content(text_content, target_language)
 
 
 def normalize_language_code(lang_code: str) -> str:

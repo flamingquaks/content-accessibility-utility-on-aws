@@ -86,7 +86,7 @@ def remediate_missing_language(
     Args:
         soup: The BeautifulSoup object representing the HTML document
         issue: The accessibility issue to remediate
-        *args: Additional arguments, may include options dict with 'default_language'
+        *args: Additional arguments, may include options dict with 'target_language'
 
     Returns:
         A message describing the remediation, or None if no remediation was performed
@@ -101,14 +101,14 @@ def remediate_missing_language(
         logger.debug("HTML element already has lang attribute")
         return None
 
-    # Get default language from options or use system default
-    default_language = DEFAULT_LANGUAGE
+    # Get target language from options or use system default
+    target_language = DEFAULT_LANGUAGE
     if args and len(args) > 0 and isinstance(args[0], dict):
         options = args[0]
-        default_language = options.get('default_language', DEFAULT_LANGUAGE)
+        target_language = options.get('target_language', DEFAULT_LANGUAGE)
 
-    # Detect language from content or use default
-    lang_code = detect_language_from_html(soup, default_language)
+    # Detect language from content or use target
+    lang_code = detect_language_from_html(soup, target_language)
     
     html["lang"] = lang_code
     logger.info("Added language attribute: lang='%s'", lang_code)

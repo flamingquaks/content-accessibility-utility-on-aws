@@ -15,14 +15,14 @@ from content_accessibility_utility_on_aws.utils.language_utils import DEFAULT_LA
 logger = logging.getLogger(__name__)
 
 
-def combine_html_files(html_files: List[str], output_path: str, default_language: str = DEFAULT_LANGUAGE) -> str:
+def combine_html_files(html_files: List[str], output_path: str, target_language: str = DEFAULT_LANGUAGE) -> str:
     """
     Combine multiple HTML files into a single HTML file.
 
     Args:
         html_files: List of paths to HTML files to combine
         output_path: Path to save the combined HTML file
-        default_language: Default language code for the combined document
+        target_language: Target language code for the combined document
 
     Returns:
         Path to the combined HTML file
@@ -43,7 +43,7 @@ def combine_html_files(html_files: List[str], output_path: str, default_language
     # Make sure we have a proper HTML structure
     if not combined_soup.html:
         combined_soup = BeautifulSoup(
-            f'<!DOCTYPE html><html lang="{default_language}"><head><meta charset="UTF-8"><title>Combined Document</title></head><body></body></html>',
+            f'<!DOCTYPE html><html lang="{target_language}"><head><meta charset="UTF-8"><title>Combined Document</title></head><body></body></html>',
             "html.parser",
         )
 
@@ -57,7 +57,7 @@ def combine_html_files(html_files: List[str], output_path: str, default_language
 
     # Make sure we have lang attribute
     if combined_soup.html and not combined_soup.html.get("lang"):
-        combined_soup.html["lang"] = default_language
+        combined_soup.html["lang"] = target_language
 
     # Get the body element
     body = combined_soup.body

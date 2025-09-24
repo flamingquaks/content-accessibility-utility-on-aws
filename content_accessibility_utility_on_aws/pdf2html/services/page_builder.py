@@ -223,7 +223,7 @@ def remove_duplicate_html_elements(
 
 def build_html_data(
     result_data: Dict[str, Any], output_dir: str, is_single_page: bool = False, 
-    default_language: str = DEFAULT_LANGUAGE
+    target_language: str = DEFAULT_LANGUAGE
 ) -> Dict[str, Any]:
     """
     Build HTML pages from BDA result elements.
@@ -232,7 +232,7 @@ def build_html_data(
         result_data: The BDA result data containing elements and pages
         output_dir: Directory to save HTML files
         is_single_page: Whether to use the single continuous HTML from document.representation.html
-        default_language: Language code to use for HTML lang attribute
+        target_language: Language code to use for HTML lang attribute
 
     Returns:
         Dict containing paths to extracted HTML files
@@ -279,7 +279,7 @@ def build_html_data(
             page_file_path = os.path.join(html_output_dir, f"page-{i}.html")
             try:
                 with open(page_file_path, "w", encoding="utf-8") as f:
-                    f.write(f'<!DOCTYPE html>\n<html lang="{default_language}">\n<head>\n')
+                    f.write(f'<!DOCTYPE html>\n<html lang="{target_language}">\n<head>\n')
                     f.write('    <meta charset="UTF-8">\n')
                     f.write(
                         '    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
@@ -301,7 +301,7 @@ def build_html_data(
         # Create combined HTML file
         combined_html_parts = [
             "<!DOCTYPE html>",
-            f'<html lang="{default_language}">',
+            f'<html lang="{target_language}">',
             "<head>",
             '    <meta charset="UTF-8">',
             '    <meta name="viewport" content="width=device-width, initial-scale=1.0">',

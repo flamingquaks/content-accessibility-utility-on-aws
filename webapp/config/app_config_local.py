@@ -122,7 +122,7 @@ class Config:
     
     def get_remediation_options(self, fix_images: bool, fix_headings: bool, 
                               fix_links: bool, severity_threshold: str, 
-                              default_language: str = DEFAULT_LANGUAGE) -> Dict[str, Any]:
+                              target_language: str = DEFAULT_LANGUAGE) -> Dict[str, Any]:
         """
         Create remediation options dictionary for the document_accessibility API.
         
@@ -131,7 +131,7 @@ class Config:
             fix_headings: Whether to fix heading structure issues
             fix_links: Whether to fix link accessibility issues
             severity_threshold: Minimum severity level to fix (error, warning, info)
-            default_language: Default language code for document language remediation
+            target_language: Target language code for document language remediation
             
         Returns:
             Dictionary of remediation options
@@ -143,7 +143,7 @@ class Config:
             "severity_threshold": severity_threshold,
             "backup": True,
             "format": "json",
-            "default_language": default_language,
+            "target_language": target_language,
         }
 
 # Create a singleton instance
