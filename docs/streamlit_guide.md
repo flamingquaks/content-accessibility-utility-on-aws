@@ -63,9 +63,9 @@ The Document Accessibility Streamlit interface provides a user-friendly web appl
 
 ### Installation
 
-1. Install the Document Accessibility package:
+1. Install the Content Accessibility package:
    ```bash
-   pip install document-accessibility
+   pip install content-accessibility-utility-on-aws
    pip install streamlit
    ```
 
