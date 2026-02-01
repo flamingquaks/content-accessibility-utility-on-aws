@@ -164,6 +164,7 @@ class RemediationManager:
             # Document structure remediation strategies
             "missing-page-title": remediate_missing_document_title,
             "missing-language": remediate_missing_language,
+            "missing-document-language": remediate_missing_language,  # Alternative issue type name
             # Form remediation strategies
             "missing-input-label": remediate_missing_form_labels,
             "missing-required-indicator": remediate_missing_required_indicators,
@@ -218,7 +219,10 @@ class RemediationManager:
                             )
                             # Continue without client, table_remediation will handle fallbacks
 
-                # Apply the remediation strategy with enhanced debugging for table issues
+                # Apply the remediation strategy with appropriate arguments
+                strategy_func = self.remediation_strategies[issue_type]
+                
+                # Check if this is a table remediation that needs a client
                 if issue_type.startswith("table-") or issue_type.startswith("table_"):
                     logger.debug(
                         f"Attempting to remediate {issue_type} with client: {client_to_use is not None}"
@@ -229,10 +233,15 @@ class RemediationManager:
                         )
                     if "selector" in issue:
                         logger.debug(f"Table selector: {issue.get('selector', '')}")
-
-                result = self.remediation_strategies[issue_type](
-                    self.soup, issue, client_to_use
-                )
+                    result = strategy_func(self.soup, issue, client_to_use)
+                else:
+                    # For non-table strategies, pass options as third argument
+                    try:
+                        # Try calling with options first (for strategies that expect options)
+                        result = strategy_func(self.soup, issue, self.options)
+                    except TypeError:
+                        # Fall back to calling without options (for older strategies)
+                        result = strategy_func(self.soup, issue)
                 if result:
                     # Check if this is an "already exists" message
                     if "already exists" in result.lower():

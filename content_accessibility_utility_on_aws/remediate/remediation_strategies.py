@@ -97,7 +97,7 @@ REMEDIATION_TEMPLATES = {
     "missing-document-language": {
         "prompt": """
         The HTML document is missing a language attribute. 
-        Please determine the appropriate language for this document based on the content.
+        Automatic language detection has already been attempted. Please review the document content and provide the most appropriate language code.
         
         Document content excerpt:
         {context}
@@ -106,7 +106,7 @@ REMEDIATION_TEMPLATES = {
         ```
         lang="en"
         ```
-        (Replace "en" with the appropriate language code)
+        (Use standard ISO 639-1 language codes like: en, es, fr, de, it, pt, zh, ja, ko, ar, etc.)
         """,
         "fix_type": "attribute",
         "attribute": "lang",
