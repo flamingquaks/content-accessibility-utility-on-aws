@@ -25,6 +25,7 @@ class SessionState:
     AUDIT_RESULTS_KEY = "audit_results"
     REMEDIATED_PATH_KEY = "remediated_path"
     PROCESSING_COMPLETE_KEY = "processing_complete"
+    SESSION_ID_KEY = "session_id"
     
     @classmethod
     def initialize_session_state(cls) -> None:
@@ -36,6 +37,16 @@ class SessionState:
             st.session_state[cls.HTML_PATH_KEY] = None
             st.session_state[cls.AUDIT_RESULTS_KEY] = None
             st.session_state[cls.REMEDIATED_PATH_KEY] = None
+            
+        # Initialize session ID if not present
+        if cls.SESSION_ID_KEY not in st.session_state:
+            st.session_state[cls.SESSION_ID_KEY] = str(uuid.uuid4())
+    
+    @classmethod
+    def get_session_id(cls) -> str:
+        """Get the current session ID."""
+        cls.initialize_session_state()  # Ensure session is initialized
+        return st.session_state[cls.SESSION_ID_KEY]
     
     @classmethod
     def create_temp_dir(cls, work_dir: Optional[str] = None) -> str:

@@ -11,7 +11,9 @@ import streamlit as st
 from typing import Dict, Any, Optional, Tuple
 
 from content_accessibility_utility_on_aws.api import audit_html_accessibility, remediate_html_accessibility, generate_remediation_report
+from content_accessibility_utility_on_aws.utils.usage_tracker import set_current_session_id
 
+from utils.session_utils import SessionState
 from config.app_config_local import Config
 
 # Set up logger
@@ -32,6 +34,10 @@ def process_html_file(html_path: str, temp_dir: str, config: Config, options: Di
         - Boolean indicating processing success/failure
         - Dictionary of results if successful, None otherwise
     """
+    # Set session context for usage tracking
+    session_id = SessionState.get_session_id()
+    set_current_session_id(session_id)
+    
     # Extract options
     perform_remediation = options.get("perform_remediation", True)
     
